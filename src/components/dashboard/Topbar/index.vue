@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { DashboardTopbarEmits } from './types'
 
-const emit = defineEmits<DashboardTopbarEmits>()
 </script>
 
 <template>
