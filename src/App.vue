@@ -7,17 +7,22 @@ const loginPath = computed(() => route.name === 'login')
 </script>
 
 <template>
-  <div :class="[
-    'min-h-screen relative bg-slate-950 text-slate-100 flex flex-col',
-    loginPath && 'items-center justify-center px-4',
-  ]">
+  <div
+    :class="[
+      'min-h-screen relative bg-slate-950 text-slate-100 flex flex-col',
+      loginPath && 'items-center justify-center px-4',
+    ]"
+  >
     <div class="absolute top-5 right-8 z-10">
       <LanguageSwitch />
     </div>
-    <div :class="loginPath
-      ? 'w-full flex items-center justify-center mb-5'
-      : 'flex-1 flex flex-col'
-      ">
+    <div
+      :class="
+        loginPath
+          ? 'w-full flex items-center justify-center mb-5'
+          : 'flex-1 flex flex-col'
+      "
+    >
       <RouterView />
     </div>
     <div class="m-4 text-center text-xs text-slate-500">

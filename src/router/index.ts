@@ -9,13 +9,12 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('../views/DashboardView.vue'),
+      component: () => import('../views/DashboardLayout.vue'),
       meta: { requiresAuth: true },
       children: tabs.map((tab) => ({
         path: tab.key,
         name: tab.key,
-        component: () =>
-          import(`@/components/dashboard/${tab.label}/index.vue`),
+        component: () => import(`@/views/dashboard/${tab.label}/index.vue`),
       })),
     },
     {

@@ -29,5 +29,13 @@
       "november": "November",
       "december": "December"
     }
+  },
+  "topbar": {
+    "title": "Tech Dashboard"
+  },
+  "sidebar": {
+    "title": "Navigation",
+    "overview": "Overview",
+    "calender": "Calender"
   }
 }

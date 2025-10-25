@@ -1,4 +1,3 @@
-// src/components/dashboard/Calender/type.ts
 export enum ShowType {
   MONTHS = 'months',
   WEEK = 'week',

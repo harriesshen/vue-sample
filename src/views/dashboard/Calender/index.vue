@@ -11,9 +11,16 @@ const selectedDate = ref<Date | null>(null)
 const showType = ref<ShowType>(ShowType.MONTHS)
 const showYearSelector = ref(false)
 const { t } = useI18n()
-console.log('translate', t('message.hello'))
 // 星期標題
-const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const dayNames = [
+  t('calender.week.monday'),
+  t('calender.week.tuesday'),
+  t('calender.week.wednesday'),
+  t('calender.week.thursday'),
+  t('calender.week.friday'),
+  t('calender.week.saturday'),
+  t('calender.week.sunday'),
+]
 const monthNames = [
   'January',
   'February',
@@ -107,39 +114,10 @@ const monthDays = computed((): CalendarDay[] => {
   return days
 })
 
-// 計算週曆視圖的日期
-const weekDays = computed((): CalendarDay[] => {
-  const days: CalendarDay[] = []
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  const startOfWeek = new Date(currentDate.value)
-  startOfWeek.setDate(currentDate.value.getDate() - currentDate.value.getDay())
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(startOfWeek)
-    date.setDate(startOfWeek.getDate() + i)
-
-    const day: CalendarDay = {
-      date: new Date(date),
-      day: date.getDate(),
-      isCurrentMonth: date.getMonth() === currentDate.value.getMonth(),
-      isToday: date.getTime() === today.getTime(),
-      isSelected: selectedDate.value
-        ? date.getTime() === selectedDate.value.getTime()
-        : false,
-    }
-
-    days.push(day)
-  }
-
-  return days
-})
-
 // 當前顯示的日期數據
-const displayDays = computed(() => {
-  return showType.value === ShowType.MONTHS ? monthDays.value : weekDays.value
-})
+// const displayDays = computed(() => {
+//   return showType.value === ShowType.MONTHS ? monthDays.value : weekDays.value
+// })
 
 // 當前顯示的標題
 // const currentTitle = computed(() => {
@@ -183,11 +161,6 @@ const goToToday = () => {
   selectedDate.value = null
 }
 
-// 視圖切換
-const switchView = (view: ShowType) => {
-  showType.value = view
-}
-
 // 選擇日期
 const selectDate = (day: CalendarDay) => {
   selectedDate.value = day.date
@@ -227,10 +200,7 @@ const formatDate = (date: Date) => {
             <div
               v-for="year in yearOptions"
               :key="year"
-              @click="
-                currentYear = year
-                showYearSelector = false
-              "
+              @click="((currentYear = year), (showYearSelector = false))"
               :class="[
                 'px-3 py-2 text-sm cursor-pointer hover:bg-slate-700 transition-colors',
                 year === currentYear
@@ -284,30 +254,24 @@ const formatDate = (date: Date) => {
     </div>
 
     <!-- 視圖選擇器 -->
-    <div class="flex gap-2 mb-4">
-      <button
-        @click="switchView(ShowType.MONTHS)"
-        :class="[
-          'px-4 py-2 rounded text-sm font-medium transition-colors',
-          showType === ShowType.MONTHS
-            ? 'bg-cyan-600 text-white'
-            : 'bg-slate-700 text-slate-300 hover:bg-slate-600',
-        ]"
-      >
+    <!-- <div class="flex gap-2 mb-4">
+      <button @click="switchView(ShowType.MONTHS)" :class="[
+        'px-4 py-2 rounded text-sm font-medium transition-colors',
+        showType === ShowType.MONTHS
+          ? 'bg-cyan-600 text-white'
+          : 'bg-slate-700 text-slate-300 hover:bg-slate-600',
+      ]">
         月曆
       </button>
-      <button
-        @click="switchView(ShowType.WEEK)"
-        :class="[
-          'px-4 py-2 rounded text-sm font-medium transition-colors',
-          showType === ShowType.WEEK
-            ? 'bg-cyan-600 text-white'
-            : 'bg-slate-700 text-slate-300 hover:bg-slate-600',
-        ]"
-      >
+      <button @click="switchView(ShowType.WEEK)" :class="[
+        'px-4 py-2 rounded text-sm font-medium transition-colors',
+        showType === ShowType.WEEK
+          ? 'bg-cyan-600 text-white'
+          : 'bg-slate-700 text-slate-300 hover:bg-slate-600',
+      ]">
         週曆
       </button>
-    </div>
+    </div> -->
 
     <!-- 星期標題 -->
     <div class="grid grid-cols-7 gap-1 mb-2">
@@ -323,7 +287,7 @@ const formatDate = (date: Date) => {
     <!-- 日期格子 -->
     <div class="grid grid-cols-7 gap-1 flex-1">
       <div
-        v-for="day in displayDays"
+        v-for="day in monthDays"
         :key="day.date.toISOString()"
         @click="selectDate(day)"
         :class="[

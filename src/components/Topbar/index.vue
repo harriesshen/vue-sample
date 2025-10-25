@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 defineOptions({
   name: 'TopbarPage', // 設定一個多詞的名稱
 })
+const { t } = useI18n()
 </script>
 
 <template>
@@ -13,10 +16,7 @@ defineOptions({
         <div class="h-full w-full rounded-lg bg-slate-950"></div>
       </div>
       <div>
-        <div class="text-sm uppercase tracking-widest text-cyan-400/80">
-          Control Center
-        </div>
-        <div class="text-xl font-semibold">Tech Dashboard</div>
+        <div class="text-xl font-semibold">{{ t('topbar.title') }}</div>
       </div>
     </div>
   </div>
