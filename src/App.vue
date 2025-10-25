@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
-import LanguageSwitch from '@/components/LanguageSwitch/index.vue'
+import Dropdown from '@/components/Dropdown/index.vue'
+import { useI18n } from 'vue-i18n'
 const route = useRoute()
 const loginPath = computed(() => route.name === 'login')
+const { locale } = useI18n()
+
+const handleChangeLanguage = (value: string) => {
+  locale.value = value
+}
 </script>
 
 <template>
@@ -14,7 +20,11 @@ const loginPath = computed(() => route.name === 'login')
     ]"
   >
     <div class="absolute top-5 right-8 z-10">
-      <LanguageSwitch />
+      <Dropdown
+        v-model="locale"
+        :options="$i18n.availableLocales"
+        @change="handleChangeLanguage"
+      />
     </div>
     <div
       :class="
