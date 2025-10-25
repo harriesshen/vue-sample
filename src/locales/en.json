@@ -28,7 +28,8 @@
       "october": "October",
       "november": "November",
       "december": "December"
-    }
+    },
+    "selectedDay": "selected"
   },
   "topbar": {
     "title": "Tech Dashboard"

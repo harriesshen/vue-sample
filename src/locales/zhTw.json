@@ -28,7 +28,8 @@
       "october": "十月",
       "november": "十一月",
       "december": "十二月"
-    }
+    },
+    "selectedDay": "選擇日期"
   },
   "topbar": {
     "title": "後台系統"

@@ -3,38 +3,16 @@ defineOptions({
   name: 'CalenderPage', // 設定一個多詞的名稱
 })
 import { ref, computed } from 'vue'
-import { ShowType, type CalendarDay } from './type'
+import { type CalendarDay } from './type'
 import { useI18n } from 'vue-i18n'
+import { dayNames, monthNames } from '@/constant/calender'
+import Dropdown from '@/components/Dropdown/index.vue'
+
 // 響應式數據
 const currentDate = ref(new Date())
+const currentMonth = ref(new Date().getMonth())
 const selectedDate = ref<Date | null>(null)
-const showType = ref<ShowType>(ShowType.MONTHS)
-const showYearSelector = ref(false)
 const { t } = useI18n()
-// 星期標題
-const dayNames = [
-  t('calender.week.monday'),
-  t('calender.week.tuesday'),
-  t('calender.week.wednesday'),
-  t('calender.week.thursday'),
-  t('calender.week.friday'),
-  t('calender.week.saturday'),
-  t('calender.week.sunday'),
-]
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-]
 
 // 生成年份選項（當前年份前後 10 年）
 const yearOptions = computed(() => {
@@ -56,17 +34,14 @@ const currentYear = computed({
   },
 })
 
-// 當前月份
-const currentMonth = computed({
-  get: () => currentDate.value.getMonth(),
-  set: (month: number) => {
-    const newDate = new Date(currentDate.value)
-    newDate.setMonth(month)
-    currentDate.value = newDate
-  },
+const monthList = computed(() => {
+  return monthNames.map((month, index) => ({
+    text: t(`calender.months.${month}`),
+    value: index,
+  }))
 })
 
-// 計算當前月份的第一天和最後一天
+// 計算當前月份的第一天
 const firstDayOfMonth = computed(() => {
   const date = new Date(
     currentDate.value.getFullYear(),
@@ -76,15 +51,6 @@ const firstDayOfMonth = computed(() => {
   return date
 })
 
-// const lastDayOfMonth = computed(() => {
-//   const date = new Date(
-//     currentDate.value.getFullYear(),
-//     currentDate.value.getMonth() + 1,
-//     0,
-//   )
-//   return date
-// })
-
 // 計算月曆視圖的日期
 const monthDays = computed((): CalendarDay[] => {
   const days: CalendarDay[] = []
@@ -92,7 +58,10 @@ const monthDays = computed((): CalendarDay[] => {
   today.setHours(0, 0, 0, 0)
 
   const startDate = new Date(firstDayOfMonth.value)
-  startDate.setDate(startDate.getDate() - firstDayOfMonth.value.getDay())
+  // 計算42格日曆的第一天 (星期一)
+  startDate.setDate(
+    startDate.getDate() - ((firstDayOfMonth.value.getDay() + 6) % 7),
+  )
 
   for (let i = 0; i < 42; i++) {
     const date = new Date(startDate)
@@ -101,7 +70,7 @@ const monthDays = computed((): CalendarDay[] => {
     const day: CalendarDay = {
       date: new Date(date),
       day: date.getDate(),
-      isCurrentMonth: date.getMonth() === currentDate.value.getMonth(),
+      isCurrentMonth: date.getMonth() === currentMonth.value,
       isToday: date.getTime() === today.getTime(),
       isSelected: selectedDate.value
         ? date.getTime() === selectedDate.value.getTime()
@@ -114,51 +83,16 @@ const monthDays = computed((): CalendarDay[] => {
   return days
 })
 
-// 當前顯示的日期數據
-// const displayDays = computed(() => {
-//   return showType.value === ShowType.MONTHS ? monthDays.value : weekDays.value
-// })
-
-// 當前顯示的標題
-// const currentTitle = computed(() => {
-//   if (showType.value === ShowType.MONTHS) {
-//     return `${monthNames[currentDate.value.getMonth()]} ${currentDate.value.getFullYear()}`
-//   } else {
-//     const startOfWeek = weekDays.value[0]
-//     const endOfWeek = weekDays.value[6]
-
-//     if (startOfWeek.date.getMonth() === endOfWeek.date.getMonth()) {
-//       return `${monthNames[startOfWeek.date.getMonth()]} ${startOfWeek.date.getFullYear()}`
-//     } else {
-//       return `${monthNames[startOfWeek.date.getMonth()]} - ${monthNames[endOfWeek.date.getMonth()]} ${startOfWeek.date.getFullYear()}`
-//     }
-//   }
-// })
-
 // 導航方法
-const goToPrevious = () => {
-  const newDate = new Date(currentDate.value)
-  if (showType.value === ShowType.MONTHS) {
-    newDate.setMonth(newDate.getMonth() - 1)
-  } else {
-    newDate.setDate(newDate.getDate() - 7)
-  }
-  currentDate.value = newDate
+const goToPreviousMonth = () => {
+  if (currentMonth.value === 0) return
+  currentMonth.value -= 1
 }
 
-const goToNext = () => {
-  const newDate = new Date(currentDate.value)
-  if (showType.value === ShowType.MONTHS) {
-    newDate.setMonth(newDate.getMonth() + 1)
-  } else {
-    newDate.setDate(newDate.getDate() + 7)
-  }
-  currentDate.value = newDate
-}
+const goToNextMonth = () => {
+  if (currentMonth.value === 11) return
 
-const goToToday = () => {
-  currentDate.value = new Date()
-  selectedDate.value = null
+  currentMonth.value += 1
 }
 
 // 選擇日期
@@ -174,117 +108,112 @@ const formatDate = (date: Date) => {
     day: '2-digit',
   })
 }
+
+const onChangeYear = (value: number) => {
+  currentYear.value = value
+}
+
+const onChangeMonth = (value: number) => {
+  currentMonth.value = value
+}
 </script>
 
 <template>
   <div
     class="calendar-container h-full flex flex-col bg-slate-900/40 rounded-lg p-4"
   >
-    <!-- 標題和導航 -->
     <div class="flex justify-between items-center mb-4">
+      <!-- header left -->
       <div class="flex items-center gap-4">
-        <!-- 年份選擇器 -->
-        <div class="relative">
-          <button
-            @click="showYearSelector = !showYearSelector"
-            class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm transition-colors"
+        <button
+          @click="goToPreviousMonth"
+          :class="[
+            'p-2 rounded transition-colors',
+            currentMonth === 0
+              ? 'bg-slate-400 hover:bg-slate-400 cursor-not-allowed'
+              : 'bg-slate-700 hover:bg-slate-600 cursor-pointer',
+          ]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
           >
-            {{ currentYear }} ▼
-          </button>
-
-          <!-- 年份下拉選單 -->
-          <div
-            v-if="showYearSelector"
-            class="absolute top-full left-0 mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto w-20"
-          >
-            <div
-              v-for="year in yearOptions"
-              :key="year"
-              @click="((currentYear = year), (showYearSelector = false))"
-              :class="[
-                'px-3 py-2 text-sm cursor-pointer hover:bg-slate-700 transition-colors',
-                year === currentYear
-                  ? 'bg-slate-700 text-cyan-400'
-                  : 'text-slate-300',
-              ]"
-            >
-              {{ year }}
-            </div>
-          </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+            />
+          </svg>
+        </button>
+        <div class="relative h-full">
+          <Dropdown
+            v-model="currentYear"
+            :options="yearOptions"
+            @change="onChangeYear"
+          />
         </div>
 
-        <!-- 月份選擇器 -->
-        <div class="relative">
-          <select
+        <div class="relative h-full">
+          <Dropdown
             v-model="currentMonth"
-            class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm transition-colors appearance-none cursor-pointer"
-          >
-            <option
-              v-for="(month, index) in monthNames"
-              :key="index"
-              :value="index"
-            >
-              {{ month }}
-            </option>
-          </select>
+            :options="monthList"
+            @change="onChangeMonth"
+          />
         </div>
       </div>
 
-      <!-- 導航按鈕 -->
-      <div class="flex items-center gap-2">
+      <!-- selected date -->
+      <div v-if="selectedDate" class="bg-slate-800/60 rounded-lg">
+        <div class="text-sm text-slate-300 py-2 px-3">
+          {{ t('calender.selectedDay') }}：{{ formatDate(selectedDate) }}
+        </div>
+      </div>
+
+      <!-- header right -->
+      <div class="flex items-center gap-2 h-full">
         <button
-          @click="goToPrevious"
-          class="p-2 bg-slate-700 hover:bg-slate-600 rounded transition-colors"
+          @click="goToNextMonth"
+          :class="[
+            'p-2 rounded transition-colors',
+            currentMonth === 11
+              ? 'bg-slate-400 hover:bg-slate-400 cursor-not-allowed'
+              : 'bg-slate-700 hover:bg-slate-600 cursor-pointer',
+          ]"
         >
-          ‹
-        </button>
-        <button
-          @click="goToToday"
-          class="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm transition-colors"
-        >
-          今天
-        </button>
-        <button
-          @click="goToNext"
-          class="p-2 bg-slate-700 hover:bg-slate-600 rounded transition-colors"
-        >
-          ›
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+            />
+          </svg>
         </button>
       </div>
     </div>
 
-    <!-- 視圖選擇器 -->
-    <!-- <div class="flex gap-2 mb-4">
-      <button @click="switchView(ShowType.MONTHS)" :class="[
-        'px-4 py-2 rounded text-sm font-medium transition-colors',
-        showType === ShowType.MONTHS
-          ? 'bg-cyan-600 text-white'
-          : 'bg-slate-700 text-slate-300 hover:bg-slate-600',
-      ]">
-        月曆
-      </button>
-      <button @click="switchView(ShowType.WEEK)" :class="[
-        'px-4 py-2 rounded text-sm font-medium transition-colors',
-        showType === ShowType.WEEK
-          ? 'bg-cyan-600 text-white'
-          : 'bg-slate-700 text-slate-300 hover:bg-slate-600',
-      ]">
-        週曆
-      </button>
-    </div> -->
-
-    <!-- 星期標題 -->
+    <!-- week title -->
     <div class="grid grid-cols-7 gap-1 mb-2">
       <div
-        v-for="dayName in dayNames"
-        :key="dayName"
+        v-for="day in dayNames"
+        :key="day"
         class="p-2 text-center font-semibold text-slate-400 text-sm border-b border-slate-700"
       >
-        {{ dayName }}
+        {{ t(`calender.week.${day}`) }}
       </div>
     </div>
 
-    <!-- 日期格子 -->
+    <!-- days layout -->
     <div class="grid grid-cols-7 gap-1 flex-1">
       <div
         v-for="day in monthDays"
@@ -309,24 +238,6 @@ const formatDate = (date: Date) => {
         >
           {{ day.day }}
         </span>
-
-        <div class="flex gap-1 mt-1">
-          <div
-            v-if="day.day % 3 === 0"
-            class="w-1 h-1 bg-blue-400 rounded-full"
-          ></div>
-          <div
-            v-if="day.day % 5 === 0"
-            class="w-1 h-1 bg-green-400 rounded-full"
-          ></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 選中日期信息 -->
-    <div v-if="selectedDate" class="mt-4 p-3 bg-slate-800/60 rounded-lg">
-      <div class="text-sm text-slate-300">
-        選中日期：{{ formatDate(selectedDate) }}
       </div>
     </div>
   </div>
@@ -335,11 +246,6 @@ const formatDate = (date: Date) => {
 <style scoped>
 .calendar-container {
   min-height: 0;
-}
-
-/* 點擊外部關閉下拉選單 */
-.relative {
-  position: relative;
 }
 
 /* 響應式調整 */
