@@ -7,8 +7,9 @@ import { type CalendarDay } from './type'
 import { useI18n } from 'vue-i18n'
 import { dayNames, monthNames } from '@/constant/calender'
 import Dropdown from '@/components/Dropdown/index.vue'
+import RightArrowIcon from '@/components/icons/RightArrowIcon.vue'
+import LeftArrowIcon from '@/components/icons/LeftArrowIcon.vue'
 
-// 響應式數據
 const currentDate = ref(new Date())
 const currentMonth = ref(new Date().getMonth())
 const selectedDate = ref<Date | null>(null)
@@ -24,7 +25,6 @@ const yearOptions = computed(() => {
   return years
 })
 
-// 當前年份
 const currentYear = computed({
   get: () => currentDate.value.getFullYear(),
   set: (year: number) => {
@@ -83,7 +83,6 @@ const monthDays = computed((): CalendarDay[] => {
   return days
 })
 
-// 導航方法
 const goToPreviousMonth = () => {
   if (currentMonth.value === 0) return
   currentMonth.value -= 1
@@ -95,12 +94,10 @@ const goToNextMonth = () => {
   currentMonth.value += 1
 }
 
-// 選擇日期
 const selectDate = (day: CalendarDay) => {
   selectedDate.value = day.date
 }
 
-// 格式化日期顯示
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('zh-TW', {
     year: 'numeric',
@@ -134,20 +131,7 @@ const onChangeMonth = (value: number) => {
               : 'bg-slate-700 hover:bg-slate-600 cursor-pointer',
           ]"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-            />
-          </svg>
+          <LeftArrowIcon />
         </button>
         <div class="relative h-full">
           <Dropdown
@@ -184,20 +168,7 @@ const onChangeMonth = (value: number) => {
               : 'bg-slate-700 hover:bg-slate-600 cursor-pointer',
           ]"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-            />
-          </svg>
+          <RightArrowIcon />
         </button>
       </div>
     </div>
