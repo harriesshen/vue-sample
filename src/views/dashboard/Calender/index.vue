@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineOptions({
-  name: 'CalenderPage', // 設定一個多詞的名稱
+  name: 'CalenderPage',
 })
 import CalenderHeader from './components/CalenderHeader.vue'
 import CalenderWeekTitle from './components/CalenderWeekTitle.vue'

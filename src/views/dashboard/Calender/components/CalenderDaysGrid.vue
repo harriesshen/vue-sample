@@ -13,6 +13,7 @@
           : 'bg-slate-900/20 text-slate-500',
         day.isToday ? 'ring-2 ring-cyan-500 bg-cyan-500/20' : '',
       ]"
+      @contextmenu="showMenu($event, day.date)"
     >
       <span
         :class="[
@@ -24,14 +25,77 @@
         {{ day.day }}
       </span>
     </div>
+    <Transition name="fade">
+      <div
+        v-if="isMenuVisible"
+        :class="[
+          'custom-context-menu',
+          'rounded-lg bg-slate-700 text-slate-300',
+        ]"
+        :style="{ top: `${menuPosition.y}px`, left: `${menuPosition.x}px` }"
+        @click.stop
+      >
+        <ul>
+          <li
+            class="py-2 px-4 hover:bg-slate-900 cursor-pointer text-base"
+            @click="onOptionClick('複製')"
+          >
+            建立事件
+          </li>
+        </ul>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useCalender } from '@/stores/calender'
 import { storeToRefs } from 'pinia'
+import { ref, Transition, watchEffect } from 'vue'
 
 const calender = useCalender()
 const { monthDays } = storeToRefs(calender)
 const { selectDate } = calender
+
+const isMenuVisible = ref(false)
+const menuPosition = ref({ x: 0, y: 0 })
+const targetItem = ref<Date | null>(null)
+
+watchEffect((onCleanup) => {
+  if (isMenuVisible.value) {
+    window.addEventListener('click', hideMenu)
+
+    onCleanup(() => {
+      window.removeEventListener('click', hideMenu)
+    })
+  }
+})
+
+const showMenu = (event: MouseEvent, day: Date) => {
+  event.preventDefault()
+  // 設置選單的 x, y 座標
+  // 我們使用 clientX/Y，它會提供相對於「可視視窗」的座標
+  menuPosition.value = { x: event.clientX, y: event.clientY }
+
+  // 標記選單為可見
+  isMenuVisible.value = true
+  targetItem.value = day
+}
+
+const hideMenu = () => {
+  isMenuVisible.value = false
+  targetItem.value = null
+}
+
+function onOptionClick(option: string) {
+  alert(`您點擊了 [${option}]，目標是 [${targetItem.value}]`)
+}
 </script>
+
+<style scoped>
+.custom-context-menu {
+  position: fixed; /* 使用 fixed，因為 clientX/Y 是相對於視窗的 */
+  z-index: 1000;
+  width: 150px;
+}
+</style>
