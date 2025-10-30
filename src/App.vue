@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import Dropdown from '@/components/Dropdown/index.vue'
 import { useI18n } from 'vue-i18n'
+import ModalWrapper from './components/Modal/ModalWrapper.vue'
 const route = useRoute()
 const loginPath = computed(() => route.name === 'login')
 const { locale } = useI18n()
@@ -34,6 +35,7 @@ const handleChangeLanguage = (value: string) => {
       "
     >
       <RouterView />
+      <ModalWrapper />
     </div>
     <div class="m-4 text-center text-xs text-slate-500">
       © 2025 Tech Dashboard
@@ -41,4 +43,22 @@ const handleChangeLanguage = (value: string) => {
   </div>
 </template>
 
-<style scoped></style>
+<style>
+html::-webkit-scrollbar {
+  width: 1px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #1e293b; /* 軌道顏色 */
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #06b6d4; /* 滑塊顏色 */
+  border-radius: 8px;
+  border: 2px solid #1e293b; /* 製造邊框效果 */
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background-color: #0891b2; /* 滑鼠懸停顏色 */
+}
+</style>

@@ -38,7 +38,7 @@
         <ul>
           <li
             class="py-2 px-4 hover:bg-slate-900 cursor-pointer text-base"
-            @click="onOptionClick('複製')"
+            @click="addEvent()"
           >
             建立事件
           </li>
@@ -49,11 +49,13 @@
 </template>
 
 <script setup lang="ts">
+import useModal from '@/composables/useModal'
 import { useCalender } from '@/stores/calender'
 import { storeToRefs } from 'pinia'
 import { ref, Transition, watchEffect } from 'vue'
 
 const calender = useCalender()
+const { open, close } = useModal()
 const { monthDays } = storeToRefs(calender)
 const { selectDate } = calender
 
@@ -87,8 +89,8 @@ const hideMenu = () => {
   targetItem.value = null
 }
 
-function onOptionClick(option: string) {
-  alert(`您點擊了 [${option}]，目標是 [${targetItem.value}]`)
+function addEvent() {
+  open()
 }
 </script>
 
