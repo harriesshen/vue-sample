@@ -7,3 +7,8 @@ blue, indigo, green
 white, gray
 
 */
+
+input,
+textarea {
+  outline: none;
+}

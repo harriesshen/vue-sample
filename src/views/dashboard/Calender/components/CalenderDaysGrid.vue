@@ -3,7 +3,7 @@
     <div
       v-for="day in monthDays"
       :key="day.date.toISOString()"
-      @click="selectDate(day)"
+      @click="selectDate(day.date)"
       :class="[
         'border border-slate-700 hover:bg-slate-700/60 cursor-pointer transition-colors',
         'flex flex-col items-center justify-start min-h-[80px] relative p-1',
@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import CalenderModal from '@/components/Modal/CalenderModal.vue'
 import useModal from '@/composables/useModal'
 import { useCalender } from '@/stores/calender'
 import { storeToRefs } from 'pinia'
@@ -56,8 +57,8 @@ import { ref, Transition, watchEffect } from 'vue'
 
 const calender = useCalender()
 const { open, close } = useModal()
-const { monthDays } = storeToRefs(calender)
-const { selectDate } = calender
+const { monthDays, selectedDate } = storeToRefs(calender)
+const { selectDate, formatDate } = calender
 
 const isMenuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
@@ -82,6 +83,7 @@ const showMenu = (event: MouseEvent, day: Date) => {
   // 標記選單為可見
   isMenuVisible.value = true
   targetItem.value = day
+  selectDate(day)
 }
 
 const hideMenu = () => {
@@ -90,7 +92,14 @@ const hideMenu = () => {
 }
 
 function addEvent() {
-  open()
+  open({
+    component: CalenderModal,
+    props: {
+      date: formatDate(selectedDate.value),
+    },
+  })
+
+  isMenuVisible.value = false
 }
 </script>
 

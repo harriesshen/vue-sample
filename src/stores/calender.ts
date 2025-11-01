@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 
 export const useCalender = defineStore('calender', () => {
   const currentDate = ref(new Date())
-  const selectedDate = ref<Date | null>(null)
+  const selectedDate = ref<Date>(new Date())
   const { t } = useI18n()
 
   const yearOptions = computed(() => {
@@ -26,7 +26,7 @@ export const useCalender = defineStore('calender', () => {
       currentDate.value = newDate
     },
   })
-  console.log('year', yearOptions.value)
+
   const currentMonth = computed({
     get: () => currentDate.value.getMonth(),
     set: (month: number) => {
@@ -95,8 +95,8 @@ export const useCalender = defineStore('calender', () => {
     currentMonth.value += 1
   }
 
-  const selectDate = (day: CalendarDay) => {
-    selectedDate.value = day.date
+  const selectDate = (day: Date) => {
+    selectedDate.value = day
   }
 
   const formatDate = (date: Date) => {
