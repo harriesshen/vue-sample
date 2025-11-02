@@ -4,9 +4,15 @@ import { useI18n } from 'vue-i18n'
 import type { CalendarDay } from '@/views/dashboard/Calender/type'
 import { defineStore } from 'pinia'
 
+interface Event {
+  eventName: string
+  date: Date
+}
+
 export const useCalender = defineStore('calender', () => {
   const currentDate = ref(new Date())
   const selectedDate = ref<Date>(new Date())
+  const calenderEvent = ref<Event[]>([])
   const { t } = useI18n()
 
   const yearOptions = computed(() => {
@@ -114,6 +120,11 @@ export const useCalender = defineStore('calender', () => {
   const onChangeMonth = (value: number) => {
     currentMonth.value = value
   }
+
+  const onCalenderEventSubmit = (event: Event) => {
+    calenderEvent.value.push(event)
+    localStorage.setItem('calender', JSON.stringify(calenderEvent.value))
+  }
   return {
     currentDate,
     selectedDate,
@@ -128,5 +139,6 @@ export const useCalender = defineStore('calender', () => {
     formatDate,
     onChangeYear,
     onChangeMonth,
+    onCalenderEventSubmit,
   }
 })

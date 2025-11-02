@@ -56,9 +56,9 @@ import { storeToRefs } from 'pinia'
 import { ref, Transition, watchEffect } from 'vue'
 
 const calender = useCalender()
-const { open, close } = useModal()
+const { open } = useModal()
 const { monthDays, selectedDate } = storeToRefs(calender)
-const { selectDate, formatDate } = calender
+const { selectDate } = calender
 
 const isMenuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
@@ -95,7 +95,7 @@ function addEvent() {
   open({
     component: CalenderModal,
     props: {
-      date: formatDate(selectedDate.value),
+      date: selectedDate.value,
     },
   })
 
