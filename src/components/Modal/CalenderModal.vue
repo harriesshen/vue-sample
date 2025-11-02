@@ -34,7 +34,7 @@ import zod, { string } from 'zod'
 const { date } = defineProps<{
   date: Date
 }>()
-const { close } = useModal()
+const { closeModal } = useModal()
 const { formatDate, onCalenderEventSubmit } = useCalender()
 const initialValues = {
   eventName: '',
@@ -54,9 +54,10 @@ const onSubmit = handleSubmit((value) => {
     eventName,
     date,
   })
+  closeModal()
 })
 
 const handleClose = () => {
-  close()
+  closeModal()
 }
 </script>

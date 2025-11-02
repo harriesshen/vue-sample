@@ -4,7 +4,7 @@ const isVisible = ref(false)
 const modalComponent = shallowRef<Component | null>(null)
 const modalProps = ref<Record<string, any>>({})
 export default function useModal() {
-  const open = <T extends Component>({
+  const openModal = <T extends Component>({
     component,
     props,
   }: {
@@ -16,17 +16,17 @@ export default function useModal() {
     isVisible.value = true
   }
 
-  const close = () => {
+  const closeModal = () => {
     isVisible.value = false
     modalComponent.value = null
-    console.log('close modal')
+    console.log('closeModal modal')
   }
 
   return {
     isVisible,
     modalComponent,
     modalProps,
-    open,
-    close,
+    openModal,
+    closeModal,
   }
 }

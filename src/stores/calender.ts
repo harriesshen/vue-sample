@@ -3,6 +3,7 @@ import { monthNames } from '@/constant/calender'
 import { useI18n } from 'vue-i18n'
 import type { CalendarDay } from '@/views/dashboard/Calender/type'
 import { defineStore } from 'pinia'
+import { useStorage } from '@vueuse/core'
 
 interface Event {
   eventName: string
@@ -12,7 +13,30 @@ interface Event {
 export const useCalender = defineStore('calender', () => {
   const currentDate = ref(new Date())
   const selectedDate = ref<Date>(new Date())
-  const calenderEvent = ref<Event[]>([])
+  const calenderEvent = useStorage<Event[]>('CalenderEvent', [], localStorage, {
+    serializer: {
+      read: (value: string): Event[] => {
+        try {
+          const parsed = JSON.parse(value) as Event[]
+
+          const result = parsed.map((item) => {
+            if (item.date && typeof item.date === 'string') {
+              return { eventName: item.eventName, date: new Date(item.date) }
+            }
+            return item
+          })
+
+          return result
+        } catch (e) {
+          console.error('從 localStorage 載入資料失敗', e)
+          return [] // 如果解析失敗，回傳預設值
+        }
+      },
+      write: (value: Event[]): string => {
+        return JSON.stringify(value)
+      },
+    },
+  })
   const { t } = useI18n()
 
   const yearOptions = computed(() => {
@@ -122,9 +146,9 @@ export const useCalender = defineStore('calender', () => {
   }
 
   const onCalenderEventSubmit = (event: Event) => {
-    calenderEvent.value.push(event)
-    localStorage.setItem('calender', JSON.stringify(calenderEvent.value))
+    calenderEvent.value = [...calenderEvent.value, event]
   }
+
   return {
     currentDate,
     selectedDate,
@@ -133,6 +157,7 @@ export const useCalender = defineStore('calender', () => {
     currentMonth,
     monthList,
     monthDays,
+    calenderEvent,
     goToPreviousMonth,
     goToNextMonth,
     selectDate,

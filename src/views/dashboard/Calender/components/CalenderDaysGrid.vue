@@ -7,6 +7,7 @@
       :class="[
         'border border-slate-700 hover:bg-slate-700/60 cursor-pointer transition-colors',
         'flex flex-col items-center justify-start min-h-[80px] relative p-1',
+        'h-20 overflow-auto',
         day.isSelected ? 'bg-amber-600 ring-1 ring-amber-400 ' : '',
         day.isCurrentMonth
           ? 'bg-slate-800/40'
@@ -24,6 +25,14 @@
       >
         {{ day.day }}
       </span>
+      <div
+        v-if="event.has(day.date.toDateString())"
+        v-for="event in getEventsByDay(day)"
+        :key="event.id"
+        class="border border-slate-500 rounded-sm w-full p-1 text-xs mb-1"
+      >
+        <div class="truncate">{{ event.eventName }}</div>
+      </div>
     </div>
     <Transition name="fade">
       <div
@@ -53,18 +62,34 @@ import CalenderModal from '@/components/Modal/CalenderModal.vue'
 import useModal from '@/composables/useModal'
 import { useCalender } from '@/stores/calender'
 import { storeToRefs } from 'pinia'
-import { ref, Transition, watchEffect } from 'vue'
+import { computed, ref, Transition, watchEffect } from 'vue'
 
 const calender = useCalender()
-const { open } = useModal()
-const { monthDays, selectedDate } = storeToRefs(calender)
+const { openModal } = useModal()
+const { monthDays, selectedDate, calenderEvent } = storeToRefs(calender)
 const { selectDate } = calender
 
 const isMenuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
 const targetItem = ref<Date | null>(null)
+const event = computed(() => {
+  const map = new Map<string, any[]>()
+
+  for (const event of calenderEvent.value) {
+    const dateKey = event.date.toDateString()
+
+    if (!map.has(dateKey)) {
+      map.set(dateKey, [])
+    }
+    map.get(dateKey)!.push(event)
+  }
+  return map
+})
 
 watchEffect((onCleanup) => {
+  console.log('event', calenderEvent.value)
+  console.log('monthDays', monthDays.value)
+
   if (isMenuVisible.value) {
     window.addEventListener('click', hideMenu)
 
@@ -91,8 +116,8 @@ const hideMenu = () => {
   targetItem.value = null
 }
 
-function addEvent() {
-  open({
+const addEvent = () => {
+  openModal({
     component: CalenderModal,
     props: {
       date: selectedDate.value,
@@ -100,6 +125,10 @@ function addEvent() {
   })
 
   isMenuVisible.value = false
+}
+
+const getEventsByDay = (day: { date: Date }): any[] | undefined => {
+  return event.value.get(day.date.toDateString())
 }
 </script>
 

@@ -44,21 +44,21 @@ const handleChangeLanguage = (value: string) => {
 </template>
 
 <style>
-html::-webkit-scrollbar {
-  width: 1px;
+::-webkit-scrollbar {
+  width: 5px;
 }
 
-html::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: #1e293b; /* 軌道顏色 */
 }
 
-html::-webkit-scrollbar-thumb {
-  background-color: #06b6d4; /* 滑塊顏色 */
+::-webkit-scrollbar-thumb {
+  background-color: #587a80; /* 滑塊顏色 */
   border-radius: 8px;
   border: 2px solid #1e293b; /* 製造邊框效果 */
 }
 
-html::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background-color: #0891b2; /* 滑鼠懸停顏色 */
 }
 </style>

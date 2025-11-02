@@ -1,5 +1,5 @@
 <template>
-  <Modal @on-close="close" v-model="isVisible">
+  <Modal @on-closeModal="closeModal" v-model="isVisible">
     <component :is="modalComponent" v-if="modalComponent" v-bind="modalProps" />
   </Modal>
 </template>
@@ -8,5 +8,5 @@
 import Modal from '@/components/Modal/index.vue'
 import useModal from '@/composables/useModal'
 
-const { close, isVisible, modalComponent, modalProps } = useModal()
+const { closeModal, isVisible, modalComponent, modalProps } = useModal()
 </script>
