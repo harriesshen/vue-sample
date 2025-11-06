@@ -31,7 +31,8 @@
     },
     "selectedDay": "selected",
     "createEvent": "Add Event",
-    "eventName": "eventName"
+    "eventName": "eventName",
+    "time": "time"
   },
   "topbar": {
     "title": "Tech Dashboard"
@@ -44,5 +45,8 @@
   "modal": {
     "submit": "Submit",
     "cancel": "Cancel"
+  },
+  "validation": {
+    "required": "This is required"
   }
 }

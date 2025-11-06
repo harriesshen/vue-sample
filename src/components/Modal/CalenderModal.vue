@@ -4,6 +4,7 @@
     <div id="CalenderForm" class="px-3 mb-2">
       <form @submit="onSubmit">
         <InputText name="eventName" :label="t('calender.eventName')" />
+        <TimePicker name="time" :label="t('calender.time')" />
         <div class="bg-transparent flex flex-row gap-3">
           <button
             class="w-full rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-900 cursor-pointer hover:bg-cyan-400"
@@ -31,6 +32,7 @@ import { useCalender } from '@/stores/calender'
 import { toTypedSchema } from '@vee-validate/zod'
 import zod, { string } from 'zod'
 import { useI18n } from 'vue-i18n'
+import TimePicker from '../Form/TimePicker.vue'
 
 const { date } = defineProps<{
   date: Date
@@ -40,18 +42,23 @@ const { closeModal } = useModal()
 const { formatDate, onCalenderEventSubmit } = useCalender()
 const initialValues = {
   eventName: '',
+  // time: new Date(date),
 }
 
 const { handleSubmit } = useForm({
   validationSchema: toTypedSchema(
     zod.object({
-      eventName: string().min(1, { message: 'This is required' }),
+      eventName: string().min(1, { message: t('validation.required') }),
+      time: zod.date({
+        required_error: t('validation.required'),
+      }),
     }),
   ),
   initialValues,
 })
 const onSubmit = handleSubmit((value) => {
-  const { eventName } = value
+  const { eventName, time } = value
+  date.setHours(time.getHours(), time.getMinutes(), time.getSeconds())
   onCalenderEventSubmit({
     eventName,
     date,
