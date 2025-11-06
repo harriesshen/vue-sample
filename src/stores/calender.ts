@@ -10,6 +10,10 @@ interface Event {
   date: Date
 }
 
+const orderByEvent = (events: Event[]) => {
+  return events.sort((a, b) => a.date.getTime() - b.date.getTime())
+}
+
 export const useCalender = defineStore('calender', () => {
   const currentDate = ref(new Date())
   const selectedDate = ref<Date>(new Date())
@@ -25,15 +29,15 @@ export const useCalender = defineStore('calender', () => {
             }
             return item
           })
-
-          return result
+          return orderByEvent(result)
         } catch (e) {
           console.error('從 localStorage 載入資料失敗', e)
           return [] // 如果解析失敗，回傳預設值
         }
       },
       write: (value: Event[]): string => {
-        return JSON.stringify(value)
+        const sortEvent = orderByEvent(value)
+        return JSON.stringify(sortEvent)
       },
     },
   })
