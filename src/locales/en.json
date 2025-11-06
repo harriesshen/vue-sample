@@ -29,7 +29,9 @@
       "november": "November",
       "december": "December"
     },
-    "selectedDay": "selected"
+    "selectedDay": "selected",
+    "createEvent": "Add Event",
+    "eventName": "eventName"
   },
   "topbar": {
     "title": "Tech Dashboard"
@@ -38,5 +40,9 @@
     "title": "Navigation",
     "overview": "Overview",
     "calender": "Calender"
+  },
+  "modal": {
+    "submit": "Submit",
+    "cancel": "Cancel"
   }
 }

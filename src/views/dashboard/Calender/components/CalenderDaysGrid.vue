@@ -49,7 +49,7 @@
             class="py-2 px-4 hover:bg-slate-900 cursor-pointer text-base"
             @click="addEvent()"
           >
-            建立事件
+            {{ t('calender.createEvent') }}
           </li>
         </ul>
       </div>
@@ -63,7 +63,9 @@ import useModal from '@/composables/useModal'
 import { useCalender } from '@/stores/calender'
 import { storeToRefs } from 'pinia'
 import { computed, ref, Transition, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const calender = useCalender()
 const { openModal } = useModal()
 const { monthDays, selectedDate, calenderEvent } = storeToRefs(calender)
