@@ -27,8 +27,8 @@
       </span>
       <div
         v-if="event.has(day.date.toDateString())"
-        v-for="event in getEventsByDay(day)"
-        :key="event.id"
+        v-for="event in getEventsByDay(day.date)"
+        :key="event.eventName"
         class="border border-slate-500 rounded-sm w-full p-1 text-xs mb-1"
       >
         <div class="truncate">{{ event.eventName }}</div>
@@ -60,9 +60,9 @@
 <script setup lang="ts">
 import CalenderModal from '@/components/Modal/CalenderModal.vue'
 import useModal from '@/composables/useModal'
-import { useCalender } from '@/stores/calender'
+import { useCalender, type Event } from '@/stores/calender'
 import { storeToRefs } from 'pinia'
-import { computed, ref, Transition, watchEffect } from 'vue'
+import { computed, ref, Transition, watch, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -75,7 +75,7 @@ const isMenuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
 const targetItem = ref<Date | null>(null)
 const event = computed(() => {
-  const map = new Map<string, any[]>()
+  const map = new Map<string, Event[]>()
 
   for (const event of calenderEvent.value) {
     const dateKey = event.date.toDateString()
@@ -129,8 +129,8 @@ const addEvent = () => {
   isMenuVisible.value = false
 }
 
-const getEventsByDay = (day: { date: Date }): any[] | undefined => {
-  return event.value.get(day.date.toDateString())
+const getEventsByDay = (date: Date): Event[] | undefined => {
+  return event.value.get(date.toDateString())
 }
 </script>
 

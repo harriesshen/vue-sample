@@ -1,11 +1,12 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { monthNames } from '@/constant/calender'
 import { useI18n } from 'vue-i18n'
 import type { CalendarDay } from '@/views/dashboard/Calender/type'
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
+import useNotifications from '@/composables/useNotifications'
 
-interface Event {
+export interface Event {
   eventName: string
   date: Date
 }
@@ -41,7 +42,10 @@ export const useCalender = defineStore('calender', () => {
       },
     },
   })
+  const nextNotificationTimer = ref<number | null>(null)
+
   const { t } = useI18n()
+  const { sendNotification, requestPermission } = useNotifications()
 
   const yearOptions = computed(() => {
     const currentYear = new Date().getFullYear()
@@ -153,6 +157,51 @@ export const useCalender = defineStore('calender', () => {
     calenderEvent.value = [...calenderEvent.value, event]
   }
 
+  watch(
+    calenderEvent,
+    (newEvents) => {
+      // 1. 清除上一個設定好的「舊鬧鐘」(如果有的話)
+      if (nextNotificationTimer.value) {
+        clearTimeout(nextNotificationTimer.value)
+      }
+
+      // 2. 找出「下一個」即將發生的事件
+      const now = new Date()
+      const nextEvent = newEvents.find((event) => {
+        const eventDate = new Date(event.date)
+        return eventDate > now
+      })
+
+      if (!nextEvent) {
+        return
+      }
+
+      // 4. 計算「現在」到「事件發生」還有多久 (毫秒)
+      const eventTime = new Date(nextEvent.date).getTime()
+      const timeToEvent = eventTime - now.getTime()
+
+      // (可選) 為了UX，我們提早 1 分鐘提醒
+      const REMINDER_BUFFER = 60 * 1000 // 1 分鐘 (毫秒)
+      const timeoutDuration = timeToEvent - REMINDER_BUFFER
+
+      console.log(
+        `下一個提醒已設定在 ${new Date(eventTime)}，大約 ${Math.round(timeoutDuration / 1000)} 秒後。`,
+      )
+
+      // 5. ✅ 設定「新鬧鐘」(setTimeout)
+      nextNotificationTimer.value = window.setTimeout(
+        () => {
+          sendNotification(nextEvent.eventName, {
+            body: `您的事件在 ${new Date(nextEvent.date).toLocaleTimeString()} 即將開始`,
+          })
+        },
+        timeoutDuration <= 0 ? 0 : timeoutDuration,
+      ) // 單位是毫秒
+    },
+    {
+      immediate: true, // 關鍵：讓 watch 在元件載入時「立即」執行一次
+    },
+  )
   return {
     currentDate,
     selectedDate,
