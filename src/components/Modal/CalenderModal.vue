@@ -33,19 +33,34 @@ import { toTypedSchema } from '@vee-validate/zod'
 import zod, { string } from 'zod'
 import { useI18n } from 'vue-i18n'
 import TimePicker from '../Form/TimePicker.vue'
+import {
+  CALENDER_MODAL_STATUS,
+  type CALENDER_MODAL_STATUS_TYPE,
+} from '@/constant/calender'
+import { onMounted, watch } from 'vue'
 
-const { date } = defineProps<{
-  date: Date
-}>()
-const { t } = useI18n()
-const { closeModal } = useModal()
-const { formatDate, onCalenderEventSubmit } = useCalender()
-const initialValues = {
-  eventName: '',
-  // time: new Date(date),
+interface FormType {
+  time: Date
+  eventName: string
 }
 
-const { handleSubmit } = useForm({
+const { date, eventId, status } = defineProps<{
+  date: Date
+  eventId?: number
+  status: CALENDER_MODAL_STATUS_TYPE
+}>()
+
+const { t } = useI18n()
+const { closeModal } = useModal()
+const {
+  formatDate,
+  onCalenderEventSubmit,
+  eventLength,
+  getEventById,
+  updateEventById,
+} = useCalender()
+
+const { handleSubmit, setValues } = useForm({
   validationSchema: toTypedSchema(
     zod.object({
       eventName: string().min(1, { message: t('validation.required') }),
@@ -54,18 +69,42 @@ const { handleSubmit } = useForm({
       }),
     }),
   ),
-  initialValues,
 })
-const onSubmit = handleSubmit((value) => {
+const onSubmit = handleSubmit((value: FormType) => {
   const { eventName, time } = value
   date.setHours(time.getHours(), time.getMinutes(), time.getSeconds())
+  if (status === CALENDER_MODAL_STATUS.EDIT && eventId) {
+    updateEventById({ eventId, eventName, date })
+    closeModal()
+
+    return
+  }
+  const eventNewId = eventLength + 1
   onCalenderEventSubmit({
+    eventId: eventNewId,
     eventName,
     date,
   })
   closeModal()
 })
 
+onMounted(() => {
+  // 做表單初始化
+  if (status === CALENDER_MODAL_STATUS.EDIT && eventId) {
+    const event = getEventById(eventId)
+    console.log('event', event)
+    if (event)
+      setValues({
+        eventName: event.eventName,
+        time: event.date,
+      })
+    return
+  }
+
+  setValues({
+    eventName: '',
+  })
+})
 const handleClose = () => {
   closeModal()
 }

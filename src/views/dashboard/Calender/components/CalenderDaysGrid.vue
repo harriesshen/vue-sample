@@ -25,14 +25,13 @@
       >
         {{ day.day }}
       </span>
-      <div
-        v-if="event.has(day.date.toDateString())"
-        v-for="event in getEventsByDay(day.date)"
-        :key="event.eventName"
-        class="border border-slate-500 rounded-sm w-full p-1 text-xs mb-1"
-      >
-        <div class="truncate">{{ event.eventName }}</div>
-      </div>
+      <template v-if="eventMap.has(day.date.toDateString())">
+        <CalenderEvent
+          v-for="event in getEventsByDay(day.date)"
+          :key="event.eventId"
+          :event="event"
+        />
+      </template>
     </div>
     <Transition name="fade">
       <div
@@ -62,8 +61,10 @@ import CalenderModal from '@/components/Modal/CalenderModal.vue'
 import useModal from '@/composables/useModal'
 import { useCalender, type Event } from '@/stores/calender'
 import { storeToRefs } from 'pinia'
-import { computed, ref, Transition, watch, watchEffect } from 'vue'
+import { computed, ref, Transition, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
+import CalenderEvent from './CalenderEvent.vue'
+import { CALENDER_MODAL_STATUS } from '@/constant/calender'
 
 const { t } = useI18n()
 const calender = useCalender()
@@ -74,24 +75,8 @@ const { selectDate } = calender
 const isMenuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
 const targetItem = ref<Date | null>(null)
-const event = computed(() => {
-  const map = new Map<string, Event[]>()
-
-  for (const event of calenderEvent.value) {
-    const dateKey = event.date.toDateString()
-
-    if (!map.has(dateKey)) {
-      map.set(dateKey, [])
-    }
-    map.get(dateKey)!.push(event)
-  }
-  return map
-})
 
 watchEffect((onCleanup) => {
-  console.log('event', calenderEvent.value)
-  console.log('monthDays', monthDays.value)
-
   if (isMenuVisible.value) {
     window.addEventListener('click', hideMenu)
 
@@ -123,14 +108,29 @@ const addEvent = () => {
     component: CalenderModal,
     props: {
       date: selectedDate.value,
+      status: CALENDER_MODAL_STATUS.CREATE,
     },
   })
 
   isMenuVisible.value = false
 }
 
+const eventMap = computed(() => {
+  const map = new Map<string, Event[]>()
+
+  for (const event of calenderEvent.value) {
+    const dateKey = event.date.toDateString()
+
+    if (!map.has(dateKey)) {
+      map.set(dateKey, [])
+    }
+    map.get(dateKey)!.push(event)
+  }
+  return map
+})
+
 const getEventsByDay = (date: Date): Event[] | undefined => {
-  return event.value.get(date.toDateString())
+  return eventMap.value.get(date.toDateString())
 }
 </script>
 

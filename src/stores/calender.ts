@@ -7,6 +7,7 @@ import { useStorage } from '@vueuse/core'
 import useNotifications from '@/composables/useNotifications'
 
 export interface Event {
+  eventId: number
   eventName: string
   date: Date
 }
@@ -18,6 +19,8 @@ const orderByEvent = (events: Event[]) => {
 export const useCalender = defineStore('calender', () => {
   const currentDate = ref(new Date())
   const selectedDate = ref<Date>(new Date())
+  const eventLength = ref<number>(0)
+  console.log('event length', eventLength.value)
   const calenderEvent = useStorage<Event[]>('CalenderEvent', [], localStorage, {
     serializer: {
       read: (value: string): Event[] => {
@@ -26,10 +29,11 @@ export const useCalender = defineStore('calender', () => {
 
           const result = parsed.map((item) => {
             if (item.date && typeof item.date === 'string') {
-              return { eventName: item.eventName, date: new Date(item.date) }
+              return { ...item, date: new Date(item.date) }
             }
             return item
           })
+          eventLength.value = result.length
           return orderByEvent(result)
         } catch (e) {
           console.error('從 localStorage 載入資料失敗', e)
@@ -38,6 +42,7 @@ export const useCalender = defineStore('calender', () => {
       },
       write: (value: Event[]): string => {
         const sortEvent = orderByEvent(value)
+        eventLength.value = sortEvent.length
         return JSON.stringify(sortEvent)
       },
     },
@@ -184,9 +189,7 @@ export const useCalender = defineStore('calender', () => {
       const REMINDER_BUFFER = 60 * 1000 // 1 分鐘 (毫秒)
       const timeoutDuration = timeToEvent - REMINDER_BUFFER
 
-      console.log(
-        `下一個提醒已設定在 ${new Date(eventTime)}，大約 ${Math.round(timeoutDuration / 1000)} 秒後。`,
-      )
+      console.log(`下一個提醒已設定在${nextEvent.eventName}上 `)
 
       // 5. ✅ 設定「新鬧鐘」(setTimeout)
       nextNotificationTimer.value = window.setTimeout(
@@ -202,6 +205,16 @@ export const useCalender = defineStore('calender', () => {
       immediate: true, // 關鍵：讓 watch 在元件載入時「立即」執行一次
     },
   )
+
+  const getEventById = (eventId: number) => {
+    return calenderEvent.value.find((event) => event.eventId === eventId)
+  }
+  const updateEventById = (e: Event) => {
+    calenderEvent.value = calenderEvent.value.map((event) => {
+      if (event.eventId === e.eventId) return e
+      return event
+    })
+  }
   return {
     currentDate,
     selectedDate,
@@ -211,6 +224,7 @@ export const useCalender = defineStore('calender', () => {
     monthList,
     monthDays,
     calenderEvent,
+    eventLength,
     goToPreviousMonth,
     goToNextMonth,
     selectDate,
@@ -218,5 +232,7 @@ export const useCalender = defineStore('calender', () => {
     onChangeYear,
     onChangeMonth,
     onCalenderEventSubmit,
+    getEventById,
+    updateEventById,
   }
 })
