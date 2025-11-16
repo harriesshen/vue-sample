@@ -5,6 +5,14 @@ defineOptions({
 import CalenderHeader from './components/CalenderHeader.vue'
 import CalenderWeekTitle from './components/CalenderWeekTitle.vue'
 import CalenderDaysGrid from './components/CalenderDaysGrid.vue'
+import { onMounted, onUnmounted } from 'vue'
+import { useCarouselText } from '@/stores/carouselText'
+
+const store = useCarouselText()
+
+onMounted(() => store.startPulse(5000))
+
+onUnmounted(() => store.stopPulse())
 </script>
 
 <template>

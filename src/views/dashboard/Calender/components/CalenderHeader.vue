@@ -6,9 +6,7 @@
         @click="goToPreviousMonth"
         :class="[
           'p-2 rounded transition-colors',
-          currentMonth === 0
-            ? 'bg-slate-400 hover:bg-slate-400 cursor-not-allowed'
-            : 'bg-slate-700 hover:bg-slate-600 cursor-pointer',
+          'bg-slate-700 hover:bg-slate-600 cursor-pointer',
         ]"
       >
         <LeftArrowIcon />
@@ -43,9 +41,7 @@
         @click="goToNextMonth"
         :class="[
           'p-2 rounded transition-colors',
-          currentMonth === 11
-            ? 'bg-slate-400 hover:bg-slate-400 cursor-not-allowed'
-            : 'bg-slate-700 hover:bg-slate-600 cursor-pointer',
+          'bg-slate-700 hover:bg-slate-600 cursor-pointer',
         ]"
       >
         <RightArrowIcon />

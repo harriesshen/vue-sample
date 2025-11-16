@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AnimationText: typeof import('./src/components/AnimationText/index.vue')['default']
     CalenderModal: typeof import('./src/components/Modal/CalenderModal.vue')['default']
     Dropdown: typeof import('./src/components/Dropdown/index.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']

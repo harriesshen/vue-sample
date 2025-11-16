@@ -129,12 +129,20 @@ export const useCalender = defineStore('calender', () => {
   })
 
   const goToPreviousMonth = () => {
-    if (currentMonth.value === 0) return
+    if (currentMonth.value === 0) {
+      currentYear.value -= 1
+      currentMonth.value = 11
+      return
+    }
     currentMonth.value -= 1
   }
 
   const goToNextMonth = () => {
-    if (currentMonth.value === 11) return
+    if (currentMonth.value === 11) {
+      currentYear.value += 1
+      currentMonth.value = 0
+      return
+    }
     currentMonth.value += 1
   }
 

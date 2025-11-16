@@ -6,7 +6,9 @@
     ]"
     @click="onEdit(event)"
   >
-    <div class="truncate">{{ event.eventName }}</div>
+    <div class="truncate">
+      <AnimationText :message="text" />
+    </div>
   </div>
 </template>
 
@@ -15,12 +17,12 @@ import CalenderModal from '@/components/Modal/CalenderModal.vue'
 import useModal from '@/composables/useModal'
 import { CALENDER_MODAL_STATUS } from '@/constant/calender'
 import { type Event } from '@/stores/calender'
-
+import AnimationText from '@/components/AnimationText/index.vue'
 const { event } = defineProps<{
   event: Event
 }>()
 const { openModal } = useModal()
-
+const text = [event.eventName, event.date.toLocaleTimeString()]
 const onEdit = (event: Event) => {
   console.log('edit event', event.eventName, event.date)
   const { date, eventId } = event
