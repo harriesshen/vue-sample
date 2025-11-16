@@ -29,7 +29,11 @@
       "november": "十一月",
       "december": "十二月"
     },
-    "selectedDay": "選擇日期"
+    "selectedDay": "選擇日期",
+    "createEvent": "新增事件",
+    "eventName": "事件名稱",
+    "time": "時間",
+    "backToNow": "返回"
   },
   "topbar": {
     "title": "後台系統"

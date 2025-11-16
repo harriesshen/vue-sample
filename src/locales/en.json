@@ -32,7 +32,8 @@
     "selectedDay": "selected",
     "createEvent": "Add Event",
     "eventName": "eventName",
-    "time": "time"
+    "time": "time",
+    "backToNow": "back"
   },
   "topbar": {
     "title": "Tech Dashboard"

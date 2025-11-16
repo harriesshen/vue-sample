@@ -26,6 +26,16 @@
           @change="onChangeMonth"
         />
       </div>
+      <button
+        v-if="isCurrentMonth"
+        :class="[
+          'p-2 rounded transition-colors',
+          'bg-slate-700 hover:bg-slate-600 cursor-pointer',
+        ]"
+        @click="backToNow"
+      >
+        {{ t('calender.backToNow') }}
+      </button>
     </div>
 
     <!-- selected date -->
@@ -57,6 +67,7 @@ import { useI18n } from 'vue-i18n'
 import RightArrowIcon from '@/components/icons/RightArrowIcon.vue'
 import LeftArrowIcon from '@/components/icons/LeftArrowIcon.vue'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 
 const calender = useCalender()
 
@@ -70,4 +81,18 @@ const {
   goToPreviousMonth,
 } = calender
 const { t } = useI18n()
+
+const isCurrentMonth = computed(() => {
+  const month = new Date().getMonth()
+  const year = new Date().getFullYear()
+  if (currentMonth.value !== month || currentYear.value !== year) {
+    return true
+  }
+  return false
+})
+
+const backToNow = () => {
+  onChangeMonth(new Date().getMonth())
+  onChangeYear(new Date().getFullYear())
+}
 </script>

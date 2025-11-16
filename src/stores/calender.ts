@@ -20,7 +20,6 @@ export const useCalender = defineStore('calender', () => {
   const currentDate = ref(new Date())
   const selectedDate = ref<Date>(new Date())
   const eventLength = ref<number>(0)
-  console.log('event length', eventLength.value)
   const calenderEvent = useStorage<Event[]>('CalenderEvent', [], localStorage, {
     serializer: {
       read: (value: string): Event[] => {
