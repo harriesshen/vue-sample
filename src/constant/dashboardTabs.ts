@@ -1,4 +1,4 @@
 export const tabs = [
-  { key: 'overview', label: 'Overview' },
-  { key: 'calender', label: 'Calender' },
+  { key: 'overview', label: 'overview' },
+  { key: 'calender', label: 'calender' },
 ]

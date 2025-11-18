@@ -2,11 +2,11 @@
 defineOptions({
   name: 'CalenderPage',
 })
-import CalenderHeader from './components/CalenderHeader.vue'
-import CalenderWeekTitle from './components/CalenderWeekTitle.vue'
-import CalenderDaysGrid from './components/CalenderDaysGrid.vue'
+import CalenderHeader from '@/views/dashboard/calender/block/calenderHeader.vue'
+import CalenderWeekTitle from '@/views/dashboard/calender/block/calenderWeekTitle.vue'
+import CalenderDaysGrid from '@/views/dashboard/calender/block/calenderDaysGrid.vue'
 import { onMounted, onUnmounted } from 'vue'
-import { useCarouselText } from '@/stores/carouselText'
+import { useCarouselText } from '@/stores/use-carouselText'
 
 const store = useCarouselText()
 

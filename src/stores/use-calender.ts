@@ -1,7 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import { monthNames } from '@/constant/calender'
 import { useI18n } from 'vue-i18n'
-import type { CalendarDay } from '@/views/dashboard/Calender/type'
+import type { CalendarDay } from '@/views/dashboard/Calender/types.ts'
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import useNotifications from '@/composables/useNotifications'

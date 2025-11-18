@@ -42,5 +42,12 @@
     "title": "功能",
     "overview": "瀏覽",
     "calender": "日曆"
+  },
+  "modal": {
+    "submit": "送出",
+    "cancel": "取消"
+  },
+  "validation": {
+    "required": "必填"
   }
 }

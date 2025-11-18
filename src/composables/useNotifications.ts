@@ -1,4 +1,4 @@
-import { NOTIFICATION_STATUS } from '@/constant/calender'
+import { notificationStatus } from '@/constant/calender'
 import { onMounted, ref } from 'vue'
 
 // Notification status 'default' | 'granted' | 'denied'
@@ -6,14 +6,14 @@ const permission = ref(Notification.permission)
 
 export default function useNotifications() {
   const requestPermission = async () => {
-    if (permission.value === NOTIFICATION_STATUS.DEFAULT) {
+    if (permission.value === notificationStatus.DEFAULT) {
       const result = await Notification.requestPermission()
       permission.value = result
     }
   }
 
   const sendNotification = (title: string, options?: NotificationOptions) => {
-    if (permission.value !== NOTIFICATION_STATUS.GRANTED) {
+    if (permission.value !== notificationStatus.GRANTED) {
       alert('使用者尚未同意桌面通知。')
       return
     }

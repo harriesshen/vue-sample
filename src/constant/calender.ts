@@ -25,11 +25,11 @@ export const monthNames = [
   'december',
 ]
 
-export const NOTIFICATION_STATUS = {
+export const notificationStatus = {
   DEFAULT: 'default',
   GRANTED: 'granted',
   DENIED: 'denied',
 } as const
 
-export const CALENDER_MODAL_STATUS = { CREATE: 'create', EDIT: 'edit' }
-export type CALENDER_MODAL_STATUS_TYPE = ValueOf<typeof CALENDER_MODAL_STATUS>
+export const calenderModalStatus = { CREATE: 'create', EDIT: 'edit' }
+export type calenderModalStatusType = ValueOf<typeof calenderModalStatus>

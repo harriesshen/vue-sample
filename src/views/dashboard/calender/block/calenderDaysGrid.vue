@@ -59,12 +59,12 @@
 <script setup lang="ts">
 import CalenderModal from '@/components/Modal/CalenderModal.vue'
 import useModal from '@/composables/useModal'
-import { useCalender, type Event } from '@/stores/calender'
+import { useCalender, type Event } from '@/stores/use-calender'
 import { storeToRefs } from 'pinia'
 import { computed, ref, Transition, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CalenderEvent from './CalenderEvent.vue'
-import { CALENDER_MODAL_STATUS } from '@/constant/calender'
+import CalenderEvent from '@/views/dashboard/calender/block/CalenderEvent.vue'
+import { calenderModalStatus } from '@/constant/calender'
 
 const { t } = useI18n()
 const calender = useCalender()
@@ -108,7 +108,7 @@ const addEvent = () => {
     component: CalenderModal,
     props: {
       date: selectedDate.value,
-      status: CALENDER_MODAL_STATUS.CREATE,
+      status: calenderModalStatus.CREATE,
     },
   })
 

@@ -5,7 +5,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false)
   const userEmail = ref<string | null>(null)
 
-  function login(email: string, _password: string) {
+  const login = (email: string, _password: string) => {
     // Demo login: accept any non-empty credentials
     if (email.trim().length > 0) {
       isAuthenticated.value = true
@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
     return false
   }
 
-  function logout() {
+  const logout = () => {
     isAuthenticated.value = false
     userEmail.value = null
   }

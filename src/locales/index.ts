@@ -1,6 +1,6 @@
 import { createI18n } from 'vue-i18n'
-import en from './en.json'
-import zhTw from './zhTw.json'
+import en from './en-US.json'
+import zhTw from './zh-Tw.json'
 
 export const languagesList = ['en', 'zhTw']
 

@@ -24,8 +24,8 @@ declare module 'vue' {
     RightArrowIcon: typeof import('./src/components/icons/RightArrowIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Sidebar: typeof import('./src/components/Sidebar/index.vue')['default']
+    Sidebar: typeof import('./src/components/Layout/Sidebar/index.vue')['default']
     TimePicker: typeof import('./src/components/Form/TimePicker.vue')['default']
-    Topbar: typeof import('./src/components/Topbar/index.vue')['default']
+    Topbar: typeof import('./src/components/Layout/Topbar/index.vue')['default']
   }
 }

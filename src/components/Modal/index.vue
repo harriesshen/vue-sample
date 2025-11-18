@@ -39,12 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { watchEffect } from 'vue'
 import {
   Dialog,
   DialogPanel,
-  DialogTitle,
-  DialogDescription,
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'

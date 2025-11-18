@@ -51,7 +51,7 @@
 <script setup lang="ts" generic="T extends string | number">
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
-import type { SelectOption } from './type'
+import type { SelectOption } from '@/components/Dropdown/type'
 import { computed, ref } from 'vue'
 
 const modelValue = defineModel<T>()

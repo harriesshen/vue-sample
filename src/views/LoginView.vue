@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/use-auth'
 import { useI18n } from 'vue-i18n'
+import { routers } from '@/router'
 const { t } = useI18n()
 
 const router = useRouter()
@@ -12,11 +13,11 @@ const email = ref('')
 const password = ref('')
 const error = ref('')
 
-function onSubmit() {
+const onSubmit = () => {
   error.value = ''
   const ok = auth.login(email.value, password.value)
   if (ok) {
-    router.replace({ path: '/dashboard' })
+    router.replace({ name: routers.DASHBOARD })
   } else {
     error.value = 'Invalid credentials'
   }

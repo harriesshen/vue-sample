@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCalender } from '@/stores/calender'
+import { useCalender } from '@/stores/use-calender'
 import Dropdown from '@/components/Dropdown/index.vue'
 import { useI18n } from 'vue-i18n'
 import RightArrowIcon from '@/components/icons/RightArrowIcon.vue'

@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCarouselText } from '@/stores/carouselText'
+import { useCarouselText } from '@/stores/use-carouselText'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 

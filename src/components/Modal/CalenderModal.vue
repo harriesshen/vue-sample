@@ -26,18 +26,18 @@
 
 <script setup lang="ts">
 import useModal from '@/composables/useModal'
-import InputText from '../Form/InputText.vue'
+import InputText from '@/components/Form/InputText.vue'
 import { useForm } from 'vee-validate'
-import { useCalender } from '@/stores/calender'
+import { useCalender } from '@/stores/use-calender'
 import { toTypedSchema } from '@vee-validate/zod'
 import zod, { string } from 'zod'
 import { useI18n } from 'vue-i18n'
-import TimePicker from '../Form/TimePicker.vue'
+import TimePicker from '@/components/Form/TimePicker.vue'
 import {
-  CALENDER_MODAL_STATUS,
-  type CALENDER_MODAL_STATUS_TYPE,
+  calenderModalStatus,
+  type calenderModalStatusType,
 } from '@/constant/calender'
-import { onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 
 interface FormType {
   time: Date
@@ -47,7 +47,7 @@ interface FormType {
 const { date, eventId, status } = defineProps<{
   date: Date
   eventId?: number
-  status: CALENDER_MODAL_STATUS_TYPE
+  status: calenderModalStatusType
 }>()
 
 const { t } = useI18n()
@@ -73,7 +73,7 @@ const { handleSubmit, setValues } = useForm({
 const onSubmit = handleSubmit((value: FormType) => {
   const { eventName, time } = value
   date.setHours(time.getHours(), time.getMinutes(), time.getSeconds())
-  if (status === CALENDER_MODAL_STATUS.EDIT && eventId) {
+  if (status === calenderModalStatus.EDIT && eventId) {
     updateEventById({ eventId, eventName, date })
     closeModal()
 
@@ -90,7 +90,7 @@ const onSubmit = handleSubmit((value: FormType) => {
 
 onMounted(() => {
   // 做表單初始化
-  if (status === CALENDER_MODAL_STATUS.EDIT && eventId) {
+  if (status === calenderModalStatus.EDIT && eventId) {
     const event = getEventById(eventId)
     console.log('event', event)
     if (event)

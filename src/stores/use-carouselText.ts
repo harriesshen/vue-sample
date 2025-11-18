@@ -8,7 +8,7 @@ export const useCarouselText = defineStore('carouselText', () => {
   let intervalId: number | null = null
 
   // 2. 動作 (Action)
-  function startPulse(interval: number = 3000) {
+  const startPulse = (interval: number = 3000) => {
     // 防止重複啟動
     if (intervalId) return
 
@@ -18,7 +18,7 @@ export const useCarouselText = defineStore('carouselText', () => {
     }, interval)
   }
 
-  function stopPulse() {
+  const stopPulse = () => {
     if (intervalId) {
       console.log('Pinia: Stopping pulse...')
       clearInterval(intervalId)

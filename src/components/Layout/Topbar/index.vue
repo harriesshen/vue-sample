@@ -1,12 +1,3 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-
-defineOptions({
-  name: 'TopbarPage', // 設定一個多詞的名稱
-})
-const { t } = useI18n()
-</script>
-
 <template>
   <div class="flex items-center justify-between py-6">
     <div class="flex items-center gap-3">
@@ -21,5 +12,14 @@ const { t } = useI18n()
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+defineOptions({
+  name: 'TopbarPage', // 設定一個多詞的名稱
+})
+const { t } = useI18n()
+</script>
 
 <style scoped></style>

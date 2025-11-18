@@ -15,8 +15,8 @@
 <script setup lang="ts">
 import CalenderModal from '@/components/Modal/CalenderModal.vue'
 import useModal from '@/composables/useModal'
-import { CALENDER_MODAL_STATUS } from '@/constant/calender'
-import { type Event } from '@/stores/calender'
+import { calenderModalStatus } from '@/constant/calender'
+import { type Event } from '@/stores/use-calender'
 import AnimationText from '@/components/AnimationText/index.vue'
 const { event } = defineProps<{
   event: Event
@@ -31,7 +31,7 @@ const onEdit = (event: Event) => {
     props: {
       date,
       eventId,
-      status: CALENDER_MODAL_STATUS.EDIT,
+      status: calenderModalStatus.EDIT,
     },
   })
 }
