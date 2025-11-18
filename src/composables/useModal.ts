@@ -1,4 +1,4 @@
-import { ref, shallowRef } from 'vue'
+import { readonly, ref, shallowRef } from 'vue'
 import type { Component } from 'vue'
 const isVisible = ref(false)
 const modalComponent = shallowRef<Component | null>(null)
@@ -23,9 +23,9 @@ export default function useModal() {
   }
 
   return {
-    isVisible,
-    modalComponent,
-    modalProps,
+    isVisible: readonly(isVisible),
+    modalComponent: readonly(modalComponent),
+    modalProps: readonly(modalProps),
     openModal,
     closeModal,
   }

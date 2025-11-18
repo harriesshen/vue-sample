@@ -1,5 +1,5 @@
 import { notificationStatus } from '@/constant/calender'
-import { onMounted, ref } from 'vue'
+import { onMounted, readonly, ref } from 'vue'
 
 // Notification status 'default' | 'granted' | 'denied'
 const permission = ref(Notification.permission)
@@ -30,7 +30,7 @@ export default function useNotifications() {
   })
 
   return {
-    permission, // (Ref) 讓您可以在 UI 上顯示當前權限狀態
+    permission: readonly(permission), // (Ref) 讓您可以在 UI 上顯示當前權限狀態
     requestPermission,
     sendNotification,
   }
