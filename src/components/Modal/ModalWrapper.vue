@@ -1,6 +1,6 @@
 <template>
   <Modal @on-closeModal="closeModal" v-model="isVisible">
-    <component :is="modalComponent" v-if="modalComponent" v-bind="modalProps" />
+    <component :is="modalComponent" v-bind="modalProps" />
   </Modal>
 </template>
 

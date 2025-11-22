@@ -12,19 +12,11 @@
         <LeftArrowIcon />
       </button>
       <div class="relative h-full">
-        <Dropdown
-          v-model="currentYear"
-          :options="yearOptions"
-          @change="onChangeYear"
-        />
+        <Dropdown v-model="currentYear" :options="years" />
       </div>
 
       <div class="relative h-full">
-        <Dropdown
-          v-model="currentMonth"
-          :options="monthList"
-          @change="onChangeMonth"
-        />
+        <Dropdown v-model="currentMonth" :options="months" />
       </div>
       <button
         v-if="isCurrentMonth"
@@ -61,26 +53,28 @@
 </template>
 
 <script setup lang="ts">
-import { useCalender } from '@/stores/use-calender'
 import Dropdown from '@/components/Dropdown/index.vue'
 import { useI18n } from 'vue-i18n'
 import RightArrowIcon from '@/components/icons/RightArrowIcon.vue'
 import LeftArrowIcon from '@/components/icons/LeftArrowIcon.vue'
-import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-
-const calender = useCalender()
-
-const { currentYear, yearOptions, currentMonth, monthList, selectedDate } =
-  storeToRefs(calender)
-const {
-  onChangeYear,
-  onChangeMonth,
+import {
   formatDate,
-  goToNextMonth,
-  goToPreviousMonth,
-} = calender
+  monthList,
+  yearOptions,
+} from '@/views/dashboard/calender/calender'
+
+const { selectedDate } = defineProps<{
+  selectedDate: Date
+}>()
+const emit = defineEmits(['goToPreviousMonth', 'goToNextMonth'])
+const currentYear = defineModel<number>('currentYear', { required: true })
+const currentMonth = defineModel<number>('currentMonth', { required: true })
+
 const { t } = useI18n()
+
+const years = yearOptions(new Date().getFullYear(), 10)
+const months = monthList(t)
 
 const isCurrentMonth = computed(() => {
   const month = new Date().getMonth()
@@ -92,7 +86,15 @@ const isCurrentMonth = computed(() => {
 })
 
 const backToNow = () => {
-  onChangeMonth(new Date().getMonth())
-  onChangeYear(new Date().getFullYear())
+  currentMonth.value = new Date().getMonth()
+  currentYear.value = new Date().getFullYear()
+}
+
+const goToPreviousMonth = () => {
+  emit('goToPreviousMonth')
+}
+
+const goToNextMonth = () => {
+  emit('goToNextMonth')
 }
 </script>

@@ -63,29 +63,40 @@ import { useCalender, type Event } from '@/stores/use-calender'
 import { storeToRefs } from 'pinia'
 import { computed, ref, Transition, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CalenderEvent from '@/views/dashboard/calender/block/CalenderEvent.vue'
+import CalenderEvent from '@/views/dashboard/calender/block/calenderEvent.vue'
 import { calenderModalStatus } from '@/constant/calender'
+import type { CalendarDay } from '../types'
+import { createCalenderByMonth } from '../calender'
+
+const { currentDate, currentMonth, selectedDate } = defineProps<{
+  currentDate: Date
+  currentMonth: number
+  selectedDate: Date
+}>()
+const emit = defineEmits(['selectDate'])
 
 const { t } = useI18n()
 const calender = useCalender()
+calender.initNotification()
 const { openModal } = useModal()
-const { monthDays, selectedDate, calenderEvent } = storeToRefs(calender)
-const { selectDate } = calender
+const { calenderEvent } = storeToRefs(calender)
 
 const isMenuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
 const targetItem = ref<Date | null>(null)
 
-watchEffect((onCleanup) => {
-  if (isMenuVisible.value) {
-    window.addEventListener('click', hideMenu)
-
-    onCleanup(() => {
-      window.removeEventListener('click', hideMenu)
-    })
-  }
+const firstDayOfMonth = computed(() => {
+  const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+  return date
 })
 
+const monthDays = computed((): CalendarDay[] =>
+  createCalenderByMonth(firstDayOfMonth.value, currentMonth, selectedDate, 42),
+)
+
+const selectDate = (day: Date) => {
+  emit('selectDate', day)
+}
 const showMenu = (event: MouseEvent, day: Date) => {
   event.preventDefault()
   // 設置選單的 x, y 座標
@@ -107,7 +118,7 @@ const addEvent = () => {
   openModal({
     component: CalenderModal,
     props: {
-      date: selectedDate.value,
+      date: selectedDate,
       status: calenderModalStatus.CREATE,
     },
   })
@@ -132,6 +143,16 @@ const eventMap = computed(() => {
 const getEventsByDay = (date: Date): Event[] | undefined => {
   return eventMap.value.get(date.toDateString())
 }
+
+watchEffect((onCleanup) => {
+  if (isMenuVisible.value) {
+    window.addEventListener('click', hideMenu)
+
+    onCleanup(() => {
+      window.removeEventListener('click', hideMenu)
+    })
+  }
+})
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-import { readonly, ref, shallowRef } from 'vue'
+import { markRaw, readonly, ref, shallowRef } from 'vue'
 import type { Component } from 'vue'
 const isVisible = ref(false)
 const modalComponent = shallowRef<Component | null>(null)
@@ -11,7 +11,7 @@ export default function useModal() {
     component: T
     props?: Record<string, any>
   }) => {
-    modalComponent.value = component
+    modalComponent.value = markRaw(component)
     if (props) modalProps.value = props
     isVisible.value = true
   }

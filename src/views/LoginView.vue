@@ -1,29 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/use-auth'
-import { useI18n } from 'vue-i18n'
-import { routers } from '@/router'
-const { t } = useI18n()
-
-const router = useRouter()
-const auth = useAuthStore()
-
-const email = ref('')
-const password = ref('')
-const error = ref('')
-
-const onSubmit = () => {
-  error.value = ''
-  const ok = auth.login(email.value, password.value)
-  if (ok) {
-    router.replace({ name: routers.DASHBOARD })
-  } else {
-    error.value = 'Invalid credentials'
-  }
-}
-</script>
-
 <template>
   <div class="relative w-full max-w-md">
     <div
@@ -84,5 +58,31 @@ const onSubmit = () => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/use-auth'
+import { useI18n } from 'vue-i18n'
+import { routers } from '@/router'
+const { t } = useI18n()
+
+const router = useRouter()
+const auth = useAuthStore()
+
+const email = ref('')
+const password = ref('')
+const error = ref('')
+
+const onSubmit = () => {
+  error.value = ''
+  const ok = auth.login(email.value, password.value)
+  if (ok) {
+    router.replace({ name: routers.DASHBOARD })
+  } else {
+    error.value = 'Invalid credentials'
+  }
+}
+</script>
 
 <style scoped></style>

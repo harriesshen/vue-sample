@@ -38,6 +38,7 @@ import {
   type calenderModalStatusType,
 } from '@/constant/calender'
 import { onMounted } from 'vue'
+import { formatDate } from '@/views/dashboard/calender/calender'
 
 interface FormType {
   time: Date
@@ -52,13 +53,8 @@ const { date, eventId, status } = defineProps<{
 
 const { t } = useI18n()
 const { closeModal } = useModal()
-const {
-  formatDate,
-  onCalenderEventSubmit,
-  eventLength,
-  getEventById,
-  updateEventById,
-} = useCalender()
+const { onCalenderEventSubmit, eventLength, getEventById, updateEventById } =
+  useCalender()
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: toTypedSchema(
@@ -74,7 +70,7 @@ const onSubmit = handleSubmit((value: FormType) => {
   const { eventName, time } = value
   date.setHours(time.getHours(), time.getMinutes(), time.getSeconds())
   if (status === calenderModalStatus.EDIT && eventId) {
-    updateEventById({ eventId, eventName, date })
+    updateEventById({ eventId, eventName, date, isNotification: false })
     closeModal()
 
     return
@@ -84,6 +80,7 @@ const onSubmit = handleSubmit((value: FormType) => {
     eventId: eventNewId,
     eventName,
     date,
+    isNotification: false,
   })
   closeModal()
 })
